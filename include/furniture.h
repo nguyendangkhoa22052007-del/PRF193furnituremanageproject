@@ -1,24 +1,61 @@
 #pragma once
 #include <string>
-//building furniture class
-class Furniture{
-    private:
-        std::string ID;
-        std::string MaterialType;
-        double dimension;
-        std::string BaseColor;
-    public:
-        //constructor
-        Furniture(std::string id, std::string material, double size, std::string color);
-        //destructor
-        virtual ~Furniture() = default;
-        //getter
-        std::string getID() const;
-        std::string getMaterialType() const;
-        double getDimension() const;
-        std::string getColor() const;
-        //setter
-        std::string setMaterialType(std::string material);
-        double setSize(double size);
-        std::string setColor(std::string color);
+
+enum class MaterialType {
+    Wood,
+    Metal,
+    Plastic
+};
+
+class Furniture {
+private:
+    std::string ID;
+
+    MaterialType material;
+
+    double length;
+    double width;
+    double height;
+
+    std::string baseColor;
+
+public:
+    Furniture(
+        const std::string& id,
+        MaterialType material,
+        double length,
+        double width,
+        double height,
+        const std::string& color
+    );
+
+    virtual ~Furniture() = default;
+
+    // Getter
+    std::string getID() const;
+
+    MaterialType getMaterialType() const;
+
+    double getLength() const;
+    double getWidth() const;
+    double getHeight() const;
+
+    double getArea() const;
+
+    double getVolume() const;
+
+    std::string getColor() const;
+
+    // Setter
+    void setMaterialType(MaterialType material);
+
+    void setDimension(
+        double length,
+        double width,
+        double height
+    );
+
+    void setColor(const std::string& color);
+
+    virtual double calculateMaterialCost() const;
 };

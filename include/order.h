@@ -1,30 +1,42 @@
 #pragma once
+
 #include <string>
-#include <memory>   //std::shared_ptr
+#include <memory>
 #include "furniture.h"
 
-class Order {
+class Order
+{
 private:
     std::string orderID;
     std::string carpenterName;
-    std::shared_ptr<Furniture> furnitureItem; //smart pointer 
+    std::shared_ptr<Furniture> furnitureItem;
     std::string startDate;
     int estimatedTime;
 
 public:
-    //(CONSTRUCTOR & DESTRUCTOR)
-    //smart pointer
-    Order(std::string id, std::string name, std::shared_ptr<Furniture> item, std::string date, int time);
-    
+    // Constructor
+    Order(const std::string& id,
+          const std::string& name,
+          std::shared_ptr<Furniture> item,
+          const std::string& date,
+          int time);
+
     virtual ~Order() = default;
-    //GETTER FUNCTIONS
+
+    // Getter
     std::string getOrderID() const;
     std::string getCarpenterName() const;
     std::shared_ptr<Furniture> getFurnitureItem() const;
     std::string getStartDate() const;
     int getEstimatedTime() const;
-    //SETTER FUNCTIONS
-    void setCarpenterName(std::string name);
+
+    // Setter
+    void setCarpenterName(const std::string& name);
     void setEstimatedTime(int time);
-    double calculatePricing() const; 
+    void setStartDate(const std::string& date);
+
+    void setFurnitureItem(
+        std::shared_ptr<Furniture> item);
+    // Business Logic
+    double calculatePricing() const;
 };
