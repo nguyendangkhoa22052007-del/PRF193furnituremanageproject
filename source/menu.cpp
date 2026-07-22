@@ -1,6 +1,6 @@
 #include <iostream>
 #include <memory>
-
+#include <string>
 #include "manufacturingsystem.h"
 #include "furniture.h"
 #include "order.h"
@@ -26,26 +26,39 @@ void furnitureMenu() {
     cout << "3. Search Furniture by Material\n";
     cout << "4. Update Furniture\n";
     cout << "5. Display All Furniture\n";
+    cout << "6. Delete Furniture\n";
     cout << "0. Back\n";
 }
 
-void addFurnitureUI(ManufacturingSystem& system) {
-
+void addFurnitureUI(ManufacturingSystem& system)
+{
     string id;
-    string material;
+    string materialString;
     string color;
-    double size;
 
-    try {
+    double length;
+    double width;
+    double height;
 
+    try
+    {
         cout << "ID: ";
         cin >> id;
 
         cout << "Material (Wood/Metal/Plastic): ";
-        cin >> material;
+        cin >> materialString;
 
-        cout << "Size: ";
-        cin >> size;
+        MaterialType material =
+            Furniture::stringToMaterial(materialString);
+
+        cout << "Length: ";
+        cin >> length;
+
+        cout << "Width: ";
+        cin >> width;
+
+        cout << "Height: ";
+        cin >> height;
 
         cout << "Color: ";
         cin >> color;
@@ -54,7 +67,9 @@ void addFurnitureUI(ManufacturingSystem& system) {
             make_shared<Furniture>(
                 id,
                 material,
-                size,
+                length,
+                width,
+                height,
                 color
             );
 
@@ -62,118 +77,227 @@ void addFurnitureUI(ManufacturingSystem& system) {
 
         cout << "Added successfully!\n";
     }
-    catch(exception& e) {
+    catch(const exception& e)
+    {
         cout << e.what() << endl;
     }
 }
-
-void searchFurnitureByIDUI(ManufacturingSystem& system) {
-
+void searchFurnitureByIDUI(
+    ManufacturingSystem& system)
+{
     string id;
 
     cout << "Enter ID: ";
     cin >> id;
 
-    auto item = system.searchFurnitureByID(id);
+    auto item =
+        system.searchFurnitureByID(id);
 
-    if(item == nullptr) {
+    if (!item)
+    {
         cout << "Not found!\n";
         return;
     }
+
     cout << "\nFurniture Information\n";
-    cout << "ID: " << item->getID() << endl;
-    cout << "Material: " << item->getMaterialType() << endl;
-    cout << "Size: " << item->getDimension() << endl;
-    cout << "Color: " << item->getColor() << endl;
-}
 
+    cout << "ID: "
+         << item->getID()
+         << endl;
+
+    cout << "Material: "
+         << Furniture::materialToString(
+                item->getMaterialType())
+         << endl;
+
+    cout << "Dimension: "
+         << item->getLength()
+         << " x "
+         << item->getWidth()
+         << " x "
+         << item->getHeight()
+         << endl;
+
+    cout << "Color: "
+         << item->getColor()
+         << endl;
+
+    cout << "Material Cost: "
+         << item->calculateMaterialCost()
+         << endl;
+}
 void searchFurnitureByMaterialUI(
-    ManufacturingSystem& system
-) {
+    ManufacturingSystem& system)
+{
+    string materialString;
 
-    string material;
+    cout << "Material (Wood/Metal/Plastic): ";
+    cin >> materialString;
 
-    cout << "Material: ";
-    cin >> material;
+    try
+    {
+        MaterialType material =
+            Furniture::stringToMaterial(materialString);
 
-    auto result =
-        system.searchFurnitureByMaterial(
-            material
-        );
+        auto result =
+            system.searchFurnitureByMaterial(material);
 
-    if(result.empty()) {
+        if (result.empty())
+        {
+            cout << "No furniture found!\n";
+            return;
+        }
 
-        cout << "No furniture found!\n";
-        return;
+        cout << "\n========== RESULT ==========\n";
+
+        for (const auto& item : result)
+        {
+            cout << "ID: "
+                 << item->getID()
+                 << endl;
+
+            cout << "Material: "
+                 << Furniture::materialToString(
+                        item->getMaterialType())
+                 << endl;
+
+            cout << "Dimension: "
+                 << item->getLength()
+                 << " x "
+                 << item->getWidth()
+                 << " x "
+                 << item->getHeight()
+                 << endl;
+
+            cout << "Color: "
+                 << item->getColor()
+                 << endl;
+
+            cout << "-------------------------"
+                 << endl;
+        }
     }
-
-    for(auto item : result) {
-
-        cout << item->getID()
-             << " | "
-             << item->getDimension()
-             << " | "
-             << item->getColor()
-             << endl;
+    catch(const exception& e)
+    {
+        cout << e.what() << endl;
     }
 }
-
-void updateFurnitureUI(ManufacturingSystem& system) {
-
+void updateFurnitureUI(
+    ManufacturingSystem& system)
+{
     string id;
-    string material;
+    string materialString;
     string color;
-    double size;
-        try {
-        cout << "ID: ";
+
+    double length;
+    double width;
+    double height;
+
+    try
+    {
+        cout << "Furniture ID: ";
         cin >> id;
 
-        cout << "New Material: ";
-        cin >> material;
+        cout << "New Material (Wood/Metal/Plastic): ";
+        cin >> materialString;
 
-        cout << "New Size: ";
-        cin >> size;
+        MaterialType material =
+            Furniture::stringToMaterial(materialString);
+
+        cout << "New Length: ";
+        cin >> length;
+
+        cout << "New Width: ";
+        cin >> width;
+
+        cout << "New Height: ";
+        cin >> height;
 
         cout << "New Color: ";
         cin >> color;
 
         if(system.updateFurnitureDetails(
-            id,
-            material,
-            size,
-            color))
+                id,
+                material,
+                length,
+                width,
+                height,
+                color))
         {
-            cout << "Updated!\n";
+            cout << "Updated successfully!\n";
         }
-        else {
+        else
+        {
             cout << "Furniture not found!\n";
         }
     }
-    catch(const exception& e) {
+    catch(const exception& e)
+    {
         cout << e.what() << endl;
     }
 }
+void displayAllFurniture(
+    ManufacturingSystem& system)
+{
+    const auto& list =
+        system.getFurnitureList();
 
-void displayAllFurniture(ManufacturingSystem& system) {
-
-    const auto& list = system.getFurnitureList();
-
-    if(list.empty()) {
-
+    if (list.empty())
+    {
         cout << "No furniture available!\n";
         return;
     }
-    
-    for(const auto& item : list) {
 
-        cout << item->getID() << " | "
-             << item->getMaterialType() << " | "
-             << item->getDimension() << " | "
+    cout << "\n========== FURNITURE LIST ==========\n";
+
+    for (const auto& item : list)
+    {
+        cout << "ID: "
+             << item->getID()
+             << endl;
+
+        cout << "Material: "
+             << Furniture::materialToString(
+                    item->getMaterialType())
+             << endl;
+
+        cout << "Dimension: "
+             << item->getLength()
+             << " x "
+             << item->getWidth()
+             << " x "
+             << item->getHeight()
+             << endl;
+
+        cout << "Color: "
              << item->getColor()
+             << endl;
+
+        cout << "Material Cost: "
+             << item->calculateMaterialCost()
+             << endl;
+
+        cout << "--------------------------------"
              << endl;
     }
 }
+void deleteFurnitureUI(
+    ManufacturingSystem& system)
+{
+    string id;
 
+    cout << "Furniture ID: ";
+    cin >> id;
+
+    if(system.deleteFurniture(id))
+    {
+        cout << "Deleted successfully!\n";
+    }
+    else
+    {
+        cout << "Furniture not found or is being used by an order!\n";
+    }
+}
 // ORDER MANAGEMENT
 void orderMenu()
 {
@@ -257,9 +381,18 @@ void displayOrdersUI(ManufacturingSystem& system)
         cout << "\nCarpenter: "
              << order->getCarpenterName();
 
-        cout << "\nFurniture ID: "
-             << order->getFurnitureItem()->getID();
+        auto furniture = order->getFurnitureItem();
 
+        cout << "\nFurniture ID: ";
+
+        if (furniture)
+        {
+            cout << furniture->getID();
+        }
+        else
+        {
+            cout << "N/A";
+        }
         cout << "\nStart Date: "
              << order->getStartDate();
 
@@ -272,7 +405,23 @@ void displayOrdersUI(ManufacturingSystem& system)
         cout << "\n------------------\n";
     }
 }
+void deleteOrderUI(
+    ManufacturingSystem& system)
+{
+    string id;
 
+    cout << "Order ID: ";
+    cin >> id;
+
+    if(system.deleteOrder(id))
+    {
+        cout << "Deleted successfully!\n";
+    }
+    else
+    {
+        cout << "Order not found!\n";
+    }
+}
 void sortOrdersByTimeUI(
     ManufacturingSystem& system)
 {
@@ -327,6 +476,9 @@ int main() {
                         displayAllFurniture(system);
                         break;
                     }
+                    case 6:
+                        deleteFurnitureUI(system);
+                        break;
 
                 } while(subChoice != 0);
 
