@@ -1,10 +1,10 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include "manufacturingsystem.h"
-#include "furniture.h"
-#include "order.h"
-#include "menu.h"
+#include "../include/manufacturingsystem.h"
+#include "../include/furniture.h"
+#include "../include/order.h"
+#include "../include/menu.h"
 using namespace std;
 
 void showMainMenu() {
