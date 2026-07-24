@@ -4,7 +4,7 @@
 #include "manufacturingsystem.h"
 #include "furniture.h"
 #include "order.h"
-
+#include "menu.h"
 using namespace std;
 
 void showMainMenu() {
