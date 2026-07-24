@@ -1,6 +1,7 @@
 #include "furniture.h"
 #include <stdexcept>
-
+#include <algorithm>
+#include <cctype>
 using namespace std;
 
 // =====================
@@ -40,17 +41,30 @@ string Furniture::materialToString(MaterialType material)
     }
 }
 
-MaterialType Furniture::stringToMaterial(
-    const string& material)
+MaterialType Furniture::stringToMaterial(string material)
 {
-    if (material == "Wood")
+    transform(material.begin(),
+              material.end(),
+              material.begin(),
+              [](unsigned char c)
+              {
+                  return tolower(c);
+              });
+
+    if (material == "wood")
+    {
         return MaterialType::Wood;
+    }
 
-    if (material == "Metal")
+    if (material == "metal")
+    {
         return MaterialType::Metal;
+    }
 
-    if (material == "Plastic")
+    if (material == "plastic")
+    {
         return MaterialType::Plastic;
+    }
 
     throw invalid_argument("Invalid material type.");
 }

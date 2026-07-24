@@ -61,7 +61,7 @@ void addFurnitureUI(ManufacturingSystem& system)
         cin >> height;
 
         cout << "Color: ";
-        cin >> color;
+        getline(cin >> ws, color);
 
         auto item =
             make_shared<Furniture>(
@@ -214,7 +214,7 @@ void updateFurnitureUI(
         cin >> height;
 
         cout << "New Color: ";
-        cin >> color;
+        getline(cin >> ws, color);
 
         if(system.updateFurnitureDetails(
                 id,
@@ -305,6 +305,7 @@ void orderMenu()
     cout << "1. Add Order\n";
     cout << "2. Display All Orders\n";
     cout << "3. Sort Orders By Time\n";
+    cout << "4. Delete Order\n";
     cout << "0. Back\n";
     cout << "Choose: ";
 }
@@ -335,7 +336,7 @@ void addOrderUI(ManufacturingSystem& system)
         }
 
         cout << "Carpenter Name: ";
-        cin >> carpenter;
+        getline(cin >> ws, carpenter);
 
         cout << "Start Date: ";
         cin >> startDate;
@@ -475,11 +476,10 @@ int main() {
                     case 5:
                         displayAllFurniture(system);
                         break;
-                    }
                     case 6:
                         deleteFurnitureUI(system);
                         break;
-
+                    }
                 } while(subChoice != 0);
 
                 break;
@@ -506,6 +506,9 @@ int main() {
 
                         case 3:
                             sortOrdersByTimeUI(system);
+                            break;
+                        case 4:
+                            deleteOrderUI(system);
                             break;
                         }
 

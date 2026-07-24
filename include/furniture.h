@@ -30,7 +30,9 @@ public:
     );
 
     virtual ~Furniture() = default;
+    static std::string materialToString(MaterialType material);
 
+    static MaterialType stringToMaterial(std::string material);
     // Getter
     std::string getID() const;
 
