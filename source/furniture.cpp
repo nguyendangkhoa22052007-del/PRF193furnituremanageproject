@@ -1,4 +1,4 @@
-#include "furniture.h"
+#include "../include/furniture.h"
 #include <stdexcept>
 #include <algorithm>
 #include <cctype>
