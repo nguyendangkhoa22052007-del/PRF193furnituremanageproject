@@ -4,6 +4,10 @@
 #include "manufacturingsystem.h"
 #include "furniture.h"
 #include "order.h"
+#include "furnitureIO.h"
+
+const string FURNITURE_FILE = "furniture.txt";
+const string ORDER_FILE = "orders.txt";
 
 using namespace std;
 
@@ -436,6 +440,62 @@ void sortOrdersByTimeUI(
     cout << "Orders sorted by estimated time!\n";
 }
 
+void searchAnalysisMenu() {
+    cout << "\n----- Search & Analysis -----\n";
+    cout << "1. Search Furniture by ID\n";
+    cout << "2. Search Furniture by Material\n";
+    cout << "3. Classify & Display Furniture Map (by Material)\n";
+    cout << "0. Back\n";
+    cout << "Choose: ";
+}
+
+void searchAndAnalysisUI(ManufacturingSystem& system) {
+    int choice;
+    do {
+        searchAnalysisMenu();
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                searchFurnitureByIDUI(system);
+                break;
+            case 2:
+                searchFurnitureByMaterialUI(system);
+                break;
+            case 3: {
+                system.classifyFurnitureByMaterial();
+                const auto& mapRef = system.getFurnitureMap();
+                if (mapRef.empty()) {
+                    cout << "No furniture data to analyze!\n";
+                    break;
+                }
+                cout << "\n========== ANALYSIS BY MATERIAL ==========\n";
+                for (const auto& pair : mapRef) {
+                    cout << "Material: " << Furniture::materialToString(pair.first) 
+                         << " (Total items: " << pair.second.size() << ")\n";
+                    for (const auto& item : pair.second) {
+                        cout << "  - ID: " << item->getID() 
+                             << " | Color: " << item->getColor()
+                             << " | Cost: " << item->calculateMaterialCost() << "\n";
+                    }
+                }
+                break;
+            }
+            case 0:
+                break;
+            default:
+                cout << "Invalid choice!\n";
+        }
+    } while (choice != 0);
+}
+
+void saveDataUI(const ManufacturingSystem& system) {
+    saveToFile(FURNITURE_FILE, ORDER_FILE, system);
+}
+
+void loadDataUI(ManufacturingSystem& system) {
+    loadFromFile(FURNITURE_FILE, ORDER_FILE, system);
+}
+
 int main() {
     ManufacturingSystem system;
 
@@ -515,23 +575,23 @@ int main() {
 }
 
             case 3:
-                cout << "Search & Analysis\n";
+                searchAndAnalysisUI(system);
                 break;
 
             case 4:
-                cout << "Save Data\n";
+                saveDataUI(system);
                 break;
 
             case 5:
-                cout << "Load Data\n";
+                loadDataUI(system);
                 break;
 
             case 0:
-                cout << "Goodbye!\n";
+                cout << "Exiting program. Goodbye!\n";
                 break;
 
             default:
-                cout << "Invalid choice!\n";
+                cout << "Invalid choice! Please try again.\n";
         }
 
     } while(choice != 0);
