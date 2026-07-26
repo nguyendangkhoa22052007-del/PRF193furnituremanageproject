@@ -15,16 +15,16 @@ Order::Order(const string& id,
              int time)
     : orderID(id),
       furnitureItem(item),
-      startDate(date),
       status(OrderStatus::Pending)
 {
-    if (id.empty())
+    if(id.empty())
         throw invalid_argument("Order ID cannot be empty.");
 
-    if (!item)
+    if(!item)
         throw invalid_argument("Furniture item cannot be null.");
 
     setCarpenterName(name);
+    setStartDate(date);
     setEstimatedTime(time);
 }
 

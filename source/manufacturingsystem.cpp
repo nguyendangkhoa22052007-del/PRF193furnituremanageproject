@@ -140,7 +140,48 @@ Order* ManufacturingSystem::searchOrderByID(
 
     return nullptr;
 }
+//====================================================
+// SEARCH ORDER BY CARPENTER
+//====================================================
 
+vector<Order*>
+ManufacturingSystem::searchOrderByCarpenter(
+    const string& carpenterName
+) const
+{
+    vector<Order*> result;
+
+    for (const auto& order : orderList)
+    {
+        if (order->getCarpenterName() == carpenterName)
+        {
+            result.push_back(order.get());
+        }
+    }
+
+    return result;
+}
+//====================================================
+// SEARCH ORDER BY STATUS
+//====================================================
+
+vector<Order*>
+ManufacturingSystem::searchOrderByStatus(
+    OrderStatus status
+) const
+{
+    vector<Order*> result;
+
+    for (const auto& order : orderList)
+    {
+        if (order->getStatus() == status)
+        {
+            result.push_back(order.get());
+        }
+    }
+
+    return result;
+}
 //====================================================
 // SEARCH FURNITURE BY MATERIAL
 //====================================================
@@ -185,7 +226,26 @@ bool ManufacturingSystem::updateFurnitureDetails(
 
     return true;
 }
+//====================================================
+// UPDATE ORDER STATUS
+//====================================================
 
+bool ManufacturingSystem::updateOrderStatus(
+    const string& orderID,
+    OrderStatus status
+)
+{
+    Order* order = searchOrderByID(orderID);
+
+    if (!order)
+    {
+        return false;
+    }
+
+    order->setStatus(status);
+
+    return true;
+}
 //====================================================
 // CLASSIFY FURNITURE BY MATERIAL
 //====================================================

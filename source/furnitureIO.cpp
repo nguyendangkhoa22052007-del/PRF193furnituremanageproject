@@ -85,7 +85,8 @@ void saveToFile(const string& furnitureFile,
             << order->getCarpenterName() << ","
             << furnitureID << ","
             << order->getStartDate() << ","
-            << order->getEstimatedTime()
+            << order->getEstimatedTime() << ","
+            << Order::statusToString(order->getStatus())
             << "\n";
     }
 
@@ -202,7 +203,7 @@ void loadFromFile(const string& furnitureFile,
                 parts.push_back(token);
             }
 
-            if (parts.size() != 5)
+            if (parts.size() != 6)
                 continue;
 
             string orderID = parts[0];
@@ -210,25 +211,32 @@ void loadFromFile(const string& furnitureFile,
             string furnitureID = parts[2];
             string startDate = parts[3];
             int estimatedTime = stoi(parts[4]);
+            try
+            {
+                OrderStatus status =
+                    Order::stringToStatus(parts[5]);
 
-            auto furniture =
-                system.searchFurnitureByID(furnitureID);
+                auto furniture =
+                    system.searchFurnitureByID(furnitureID);
 
-            if (!furniture)
+                if (!furniture)
+                    continue;
+
+                auto order =
+                    make_unique<Order>(
+                        orderID,
+                        carpenter,
+                        furniture,
+                        startDate,
+                        estimatedTime
+                    );
+                order->setStatus(status);
+                system.addOrder(move(order));
+            }
+            catch(const exception&)
+            {
                 continue;
-
-            auto order =
-                make_unique<Order>(
-                    orderID,
-                    carpenter,
-                    furniture,
-                    startDate,
-                    estimatedTime
-                );
-
-            system.addOrder(move(order));
-        }
-
+            }
         oIn.close();
     }
 

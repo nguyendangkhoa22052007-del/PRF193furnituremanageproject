@@ -1,7 +1,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
-
+#include <limits>
 #include "../include/manufacturingsystem.h"
 #include "../include/furniture.h"
 #include "../include/order.h"
@@ -13,14 +13,47 @@ using namespace std;
 
 const string FURNITURE_FILE = "furniture.txt";
 const string ORDER_FILE = "orders.txt";
+int inputInt()
+{
+    int value;
 
+    while (!(cin >> value))
+    {
+        cout << "Invalid input! Please enter a number: ";
+
+        cin.clear();
+
+        cin.ignore(
+            numeric_limits<streamsize>::max(),
+            '\n'
+        );
+    }
+
+    return value;
+}
+double inputDouble()
+{
+    double value;
+
+    while (!(cin >> value))
+    {
+        cout << "Invalid input! Please enter a number: ";
+
+        cin.clear();
+
+        cin.ignore(
+            numeric_limits<streamsize>::max(),
+            '\n'
+        );
+    }
+
+    return value;
+}
 void showMainMenu() {
     cout << "\n========== FURNITURE MANAGEMENT SYSTEM ==========\n";
     cout << "1. Furniture Management\n";
     cout << "2. Order Management\n";
     cout << "3. Search & Analysis\n";
-    cout << "4. Save Data\n";
-    cout << "5. Load Data\n";
     cout << "0. Exit\n";
     cout << "Choose: ";
 }
@@ -55,7 +88,7 @@ void addFurnitureUI(ManufacturingSystem& system)
         cout << "1. Standard Furniture\n";
         cout << "2. Custom Furniture\n";
         cout << "Choose: ";
-        cin >> type;
+        type = inputInt();
 
         cout << "ID: ";
         cin >> id;
@@ -67,13 +100,13 @@ void addFurnitureUI(ManufacturingSystem& system)
             Furniture::stringToMaterial(materialString);
 
         cout << "Length: ";
-        cin >> length;
+        length = inputDouble();
 
         cout << "Width: ";
-        cin >> width;
+        width = inputDouble();
 
         cout << "Height: ";
-        cin >> height;
+        height = inputDouble();
 
         cout << "Color: ";
         getline(cin >> ws, color);
@@ -97,7 +130,7 @@ void addFurnitureUI(ManufacturingSystem& system)
             double fee;
 
             cout << "Customization Fee: ";
-            cin >> fee;
+            fee = inputDouble();
 
             item =
                 make_shared<CustomFurniture>(
@@ -314,13 +347,13 @@ void updateFurnitureUI(
             Furniture::stringToMaterial(materialString);
 
         cout << "New Length: ";
-        cin >> length;
+        length = inputDouble();
 
         cout << "New Width: ";
-        cin >> width;
+        width = inputDouble();
 
         cout << "New Height: ";
-        cin >> height;
+        height = inputDouble();
 
         cout << "New Color: ";
         getline(cin >> ws, color);
@@ -339,7 +372,7 @@ void updateFurnitureUI(
             double fee;
 
             cout << "New Customization Fee: ";
-            cin >> fee;
+            fee = inputDouble();
 
             custom->setCustomizationFee(fee);
         }
@@ -445,13 +478,16 @@ void orderMenu()
 {
     cout << "\n----- Order Management -----\n";
     cout << "1. Add Order\n";
-    cout << "2. Display All Orders\n";
-    cout << "3. Sort Orders By Time\n";
-    cout << "4. Delete Order\n";
+    cout << "2. Search Order by ID\n";
+    cout << "3. Search Order by Carpenter\n";
+    cout << "4. Search Order by Status\n";
+    cout << "5. Update Order Status\n";
+    cout << "6. Display All Orders\n";
+    cout << "7. Sort Orders By Time\n";
+    cout << "8. Delete Order\n";
     cout << "0. Back\n";
     cout << "Choose: ";
 }
-
 void addOrderUI(ManufacturingSystem& system)
 {
     string orderID;
@@ -484,7 +520,7 @@ void addOrderUI(ManufacturingSystem& system)
         cin >> startDate;
 
         cout << "Estimated Time: ";
-        cin >> estimatedTime;
+        estimatedTime = inputInt();
 
         auto order =
             make_unique<Order>(
@@ -530,6 +566,8 @@ void displayOrdersUI(ManufacturingSystem& system)
 
         if (furniture)
         {
+            cout << furniture->getID();
+
             if(dynamic_pointer_cast<CustomFurniture>(furniture))
             {
                 cout << "\nFurniture Type: Custom";
@@ -548,14 +586,244 @@ void displayOrdersUI(ManufacturingSystem& system)
 
         cout << "\nEstimated Time: "
              << order->getEstimatedTime();
-
+        cout << "\nStatus: "
+             << Order::statusToString(
+                    order->getStatus());
         cout << "\nPricing: "
              << order->calculatePricing();
-
+        
         cout << "\n------------------\n";
     }
 }
+void searchOrderByIDUI(
+    ManufacturingSystem& system)
+{
+    string id;
 
+    cout << "Order ID: ";
+    cin >> id;
+
+    Order* order =
+        system.searchOrderByID(id);
+
+    if (!order)
+    {
+        cout << "Order not found!\n";
+        return;
+    }
+
+    cout << "\n========== ORDER ==========\n";
+
+    cout << "Order ID: "
+         << order->getOrderID()
+         << endl;
+
+    cout << "Carpenter: "
+         << order->getCarpenterName()
+         << endl;
+
+    auto furniture =
+        order->getFurnitureItem();
+
+    cout << "Furniture ID: ";
+
+    if(furniture)
+    {
+        cout << furniture->getID();
+
+        if(dynamic_pointer_cast<CustomFurniture>(furniture))
+        {
+            cout << "\nFurniture Type: Custom";
+        }
+        else
+        {
+            cout << "\nFurniture Type: Standard";
+        }
+    }
+    else
+    {
+        cout << "N/A";
+    }
+
+    cout << endl;
+
+    cout << "Start Date: "
+         << order->getStartDate()
+         << endl;
+
+    cout << "Estimated Time: "
+         << order->getEstimatedTime()
+         << endl;
+
+    cout << "Status: "
+         << Order::statusToString(
+                order->getStatus())
+         << endl;
+
+    cout << "Pricing: "
+         << order->calculatePricing()
+         << endl;
+}
+void searchOrderByCarpenterUI(
+    ManufacturingSystem& system)
+{
+    string carpenter;
+
+    cout << "Carpenter name: ";
+    getline(cin >> ws, carpenter);
+
+    auto result =
+        system.searchOrderByCarpenter(carpenter);
+
+    if(result.empty())
+    {
+        cout << "No orders found!\n";
+        return;
+    }
+
+    cout << "\n========== RESULT ==========\n";
+
+    for(Order* order : result)
+    {
+        cout << "Order ID: "
+             << order->getOrderID()
+             << endl;
+
+        cout << "Furniture ID: ";
+
+        if(order->getFurnitureItem())
+            cout << order->getFurnitureItem()->getID();
+        else
+            cout << "N/A";
+
+        cout << endl;
+
+        cout << "Status: "
+             << Order::statusToString(
+                    order->getStatus())
+             << endl;
+
+        cout << "Estimated Time: "
+             << order->getEstimatedTime()
+             << endl;
+
+        cout << "Pricing: "
+             << order->calculatePricing()
+             << endl;
+
+        cout << "----------------------\n";
+    }
+}
+void searchOrderByStatusUI(
+    ManufacturingSystem& system)
+{
+    int choice;
+
+    cout << "Status\n";
+    cout << "1. Pending\n";
+    cout << "2. In Progress\n";
+    cout << "3. Completed\n";
+    cout << "Choose: ";
+
+    choice = inputInt();
+
+    OrderStatus status;
+
+    switch(choice)
+    {
+        case 1:
+            status = OrderStatus::Pending;
+            break;
+
+        case 2:
+            status = OrderStatus::InProgress;
+            break;
+
+        case 3:
+            status = OrderStatus::Completed;
+            break;
+
+        default:
+            cout << "Invalid choice!\n";
+            return;
+    }
+
+    auto result =
+        system.searchOrderByStatus(status);
+
+    if(result.empty())
+    {
+        cout << "No orders found!\n";
+        return;
+    }
+
+    cout << "\n========== RESULT ==========\n";
+
+    for(Order* order : result)
+    {
+        cout << "Order ID: "
+             << order->getOrderID()
+             << endl;
+
+        cout << "Carpenter: "
+             << order->getCarpenterName()
+             << endl;
+
+        cout << "Pricing: "
+             << order->calculatePricing()
+             << endl;
+
+        cout << "----------------------\n";
+    }
+}
+void updateOrderStatusUI(
+    ManufacturingSystem& system)
+{
+    string id;
+
+    int choice;
+
+    cout << "Order ID: ";
+    cin >> id;
+
+    cout << "New Status\n";
+    cout << "1. Pending\n";
+    cout << "2. In Progress\n";
+    cout << "3. Completed\n";
+    cout << "Choose: ";
+
+    choice = inputInt();
+
+    OrderStatus status;
+
+    switch(choice)
+    {
+        case 1:
+            status = OrderStatus::Pending;
+            break;
+
+        case 2:
+            status = OrderStatus::InProgress;
+            break;
+
+        case 3:
+            status = OrderStatus::Completed;
+            break;
+
+        default:
+            cout << "Invalid choice!\n";
+            return;
+    }
+
+    if(system.updateOrderStatus(id, status))
+    {
+        cout << "Order status updated successfully!\n";
+    }
+    else
+    {
+        cout << "Order not found!\n";
+    }
+}
 void deleteOrderUI(
     ManufacturingSystem& system)
 {
@@ -602,7 +870,7 @@ void searchAndAnalysisUI(ManufacturingSystem& system) {
     int choice;
     do {
         searchAnalysisMenu();
-        cin >> choice;
+        choice = inputInt();
         switch (choice) {
             case 1:
                 searchFurnitureByIDUI(system);
@@ -649,22 +917,19 @@ void searchAndAnalysisUI(ManufacturingSystem& system) {
     } while (choice != 0);
 }
 
-void saveDataUI(const ManufacturingSystem& system) {
-    saveToFile(FURNITURE_FILE, ORDER_FILE, system);
-}
-
-void loadDataUI(ManufacturingSystem& system) {
-    loadFromFile(FURNITURE_FILE, ORDER_FILE, system);
-}
-
 int main() {
     ManufacturingSystem system;
-
+    // Automatically load data
+    loadFromFile(
+        FURNITURE_FILE,
+        ORDER_FILE,
+        system
+    );
     int choice;
 
     do {
         showMainMenu();
-        cin >> choice;
+        choice = inputInt();
 
         switch(choice) {
              case 1:
@@ -673,7 +938,7 @@ int main() {
 
                 do {
                     furnitureMenu();
-                    cin >> subChoice;
+                    subChoice = inputInt();
 
                     switch(subChoice) {
 
@@ -713,25 +978,41 @@ int main() {
                 do
                 {
                     orderMenu();
-                    cin >> subChoice;
+                    subChoice = inputInt();
 
                     switch(subChoice)
                     {
-                        case 1:
-                            addOrderUI(system);
-                            break;
+                    case 1:
+                        addOrderUI(system);
+                        break;
 
-                        case 2:
-                            displayOrdersUI(system);
-                            break;
+                    case 2:
+                        searchOrderByIDUI(system);
+                        break;
 
-                        case 3:
-                            sortOrdersByTimeUI(system);
-                            break;
+                    case 3:
+                        searchOrderByCarpenterUI(system);
+                        break;
 
-                        case 4:
-                            deleteOrderUI(system);
-                            break;
+                    case 4:
+                        searchOrderByStatusUI(system);
+                        break;
+
+                    case 5:
+                        updateOrderStatusUI(system);
+                        break;
+
+                    case 6:
+                        displayOrdersUI(system);
+                        break;
+
+                    case 7:
+                        sortOrdersByTimeUI(system);
+                        break;
+
+                    case 8:
+                        deleteOrderUI(system);
+                        break;
                     }
 
                 } while(subChoice != 0);
@@ -743,18 +1024,17 @@ int main() {
                 searchAndAnalysisUI(system);
                 break;
 
-            case 4:
-                saveDataUI(system);
-                break;
-
-            case 5:
-                loadDataUI(system);
-                break;
-
             case 0:
-                cout << "Exiting program. Goodbye!\n";
-                break;
 
+            saveToFile(
+                FURNITURE_FILE,
+                ORDER_FILE,
+                system
+            );
+
+            cout << "Data saved successfully.\n";
+            cout << "Exiting program. Goodbye!\n";
+            break;
             default:
                 cout << "Invalid choice! Please try again.\n";
         }

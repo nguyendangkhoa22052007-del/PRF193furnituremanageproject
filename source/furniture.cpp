@@ -172,13 +172,3 @@ double Furniture::calculateMaterialCost() const
     return getArea() * unitPrice;
 }
 
-// =====================
-// Pricing (Base Class)
-// =====================
-double Furniture::calculatePricing() const
-{
-    // Base implementation:
-    // pricing = material cost only.
-    // Derived classes will override this function.
-    return calculateMaterialCost();
-}
