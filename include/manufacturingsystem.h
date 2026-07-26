@@ -6,8 +6,8 @@
 #include <string>
 #include <algorithm>
 
-#include "furniture.h"
-#include "order.h"
+#include "../include/furniture.h"
+#include "../include/order.h"
 
 class ManufacturingSystem
 {
@@ -51,8 +51,6 @@ public:
         const std::string& color
     );
 
-    void displayFurniture() const;
-
     //-------------------------
     // Order
     //-------------------------
@@ -65,7 +63,21 @@ public:
         const std::string& id
     ) const;
 
-    void displayOrders() const;
+    // Search by carpenter
+    std::vector<Order*> searchOrderByCarpenter(
+        const std::string& carpenterName
+    ) const;
+
+    // Search by status
+    std::vector<Order*> searchOrderByStatus(
+        OrderStatus status
+    ) const;
+
+    // Update status
+    bool updateOrderStatus(
+        const std::string& orderID,
+        OrderStatus status
+    );
 
     //-------------------------
     // Classification
@@ -77,7 +89,11 @@ public:
         MaterialType,
         std::vector<std::shared_ptr<Furniture>>
     >& getFurnitureMap() const;
+    //-------------------------
+    // Analysis
+    //-------------------------
 
+    double calculateRevenue() const;
     //-------------------------
     // Getter
     //-------------------------
