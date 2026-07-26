@@ -1,4 +1,4 @@
-#include "manufacturingsystem.h"
+#include "../include/manufacturingsystem.h"
 
 #include <iostream>
 #include <algorithm>

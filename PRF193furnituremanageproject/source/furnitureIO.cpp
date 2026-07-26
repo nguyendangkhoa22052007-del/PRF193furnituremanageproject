@@ -1,4 +1,8 @@
+<<<<<<< HEAD:PRF193furnituremanageproject/source/furnitureIO.cpp
 #include "furnitureIO.h"
+=======
+#include "../include/furnitureIO.h"
+>>>>>>> 565b61cde44112e68632224c427b12330bbc9786:source/furnitureIO.cpp
 #include <fstream>
 #include <iostream>
 
@@ -10,7 +14,11 @@ using namespace std;
 void saveToFile(const string& furnitureFile, const string& orderFile, const ManufacturingSystem& system) {
     ofstream fOut(furnitureFile);
     if (!fOut.is_open()) {
+<<<<<<< HEAD:PRF193furnituremanageproject/source/furnitureIO.cpp
         cout << "Loi: Khong the mo file de ghi Furniture!" << endl;
+=======
+        cout << "Error: Could not open file to write Furniture!" << endl;
+>>>>>>> 565b61cde44112e68632224c427b12330bbc9786:source/furnitureIO.cpp
         return;
     }
 
@@ -27,7 +35,11 @@ void saveToFile(const string& furnitureFile, const string& orderFile, const Manu
 
     ofstream oOut(orderFile);
     if (!oOut.is_open()) {
+<<<<<<< HEAD:PRF193furnituremanageproject/source/furnitureIO.cpp
         cout << "Loi: Khong the mo file de ghi Order!" << endl;
+=======
+        cout << "Error: Could not open file to write Order!" << endl;
+>>>>>>> 565b61cde44112e68632224c427b12330bbc9786:source/furnitureIO.cpp
         return;
     }
 
@@ -47,7 +59,11 @@ void saveToFile(const string& furnitureFile, const string& orderFile, const Manu
     }
     oOut.close();
 
+<<<<<<< HEAD:PRF193furnituremanageproject/source/furnitureIO.cpp
     cout << "Da luu toan bo du lieu he thong vao file thanh cong!" << endl;
+=======
+    cout << "System data saved successfully!" << endl;
+>>>>>>> 565b61cde44112e68632224c427b12330bbc9786:source/furnitureIO.cpp
 }
 
 // ====================================================
@@ -128,5 +144,9 @@ void loadFromFile(const string& furnitureFile, const string& orderFile, Manufact
         oIn.close();
     }
 
+<<<<<<< HEAD:PRF193furnituremanageproject/source/furnitureIO.cpp
     cout << "Da tai du lieu tu file vao he thong thanh cong!" << endl;
+=======
+    cout << "Data loaded from files into the system successfully!" << endl;
+>>>>>>> 565b61cde44112e68632224c427b12330bbc9786:source/furnitureIO.cpp
 }

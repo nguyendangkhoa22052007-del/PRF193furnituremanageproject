@@ -1,15 +1,17 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include "manufacturingsystem.h"
-#include "furniture.h"
-#include "order.h"
-#include "furnitureIO.h"
+
+#include "../include/manufacturingsystem.h"
+#include "../include/furniture.h"
+#include "../include/order.h"
+#include "../include/menu.h"
+#include "../include/furnitureIO.h"
+
+using namespace std;
 
 const string FURNITURE_FILE = "furniture.txt";
 const string ORDER_FILE = "orders.txt";
-
-using namespace std;
 
 void showMainMenu() {
     cout << "\n========== FURNITURE MANAGEMENT SYSTEM ==========\n";
@@ -65,7 +67,7 @@ void addFurnitureUI(ManufacturingSystem& system)
         cin >> height;
 
         cout << "Color: ";
-        cin >> color;
+        getline(cin >> ws, color);
 
         auto item =
             make_shared<Furniture>(
@@ -86,6 +88,7 @@ void addFurnitureUI(ManufacturingSystem& system)
         cout << e.what() << endl;
     }
 }
+
 void searchFurnitureByIDUI(
     ManufacturingSystem& system)
 {
@@ -130,6 +133,7 @@ void searchFurnitureByIDUI(
          << item->calculateMaterialCost()
          << endl;
 }
+
 void searchFurnitureByMaterialUI(
     ManufacturingSystem& system)
 {
@@ -186,6 +190,7 @@ void searchFurnitureByMaterialUI(
         cout << e.what() << endl;
     }
 }
+
 void updateFurnitureUI(
     ManufacturingSystem& system)
 {
@@ -218,7 +223,7 @@ void updateFurnitureUI(
         cin >> height;
 
         cout << "New Color: ";
-        cin >> color;
+        getline(cin >> ws, color);
 
         if(system.updateFurnitureDetails(
                 id,
@@ -240,6 +245,7 @@ void updateFurnitureUI(
         cout << e.what() << endl;
     }
 }
+
 void displayAllFurniture(
     ManufacturingSystem& system)
 {
@@ -285,6 +291,7 @@ void displayAllFurniture(
              << endl;
     }
 }
+
 void deleteFurnitureUI(
     ManufacturingSystem& system)
 {
@@ -302,6 +309,7 @@ void deleteFurnitureUI(
         cout << "Furniture not found or is being used by an order!\n";
     }
 }
+
 // ORDER MANAGEMENT
 void orderMenu()
 {
@@ -309,6 +317,7 @@ void orderMenu()
     cout << "1. Add Order\n";
     cout << "2. Display All Orders\n";
     cout << "3. Sort Orders By Time\n";
+    cout << "4. Delete Order\n";
     cout << "0. Back\n";
     cout << "Choose: ";
 }
@@ -339,7 +348,7 @@ void addOrderUI(ManufacturingSystem& system)
         }
 
         cout << "Carpenter Name: ";
-        cin >> carpenter;
+        getline(cin >> ws, carpenter);
 
         cout << "Start Date: ";
         cin >> startDate;
@@ -409,6 +418,7 @@ void displayOrdersUI(ManufacturingSystem& system)
         cout << "\n------------------\n";
     }
 }
+
 void deleteOrderUI(
     ManufacturingSystem& system)
 {
@@ -426,6 +436,7 @@ void deleteOrderUI(
         cout << "Order not found!\n";
     }
 }
+
 void sortOrdersByTimeUI(
     ManufacturingSystem& system)
 {
@@ -535,19 +546,19 @@ int main() {
                     case 5:
                         displayAllFurniture(system);
                         break;
-                    }
+
                     case 6:
                         deleteFurnitureUI(system);
                         break;
-
+                    }
                 } while(subChoice != 0);
 
                 break;
             }
 
             case 2:
-                {
-                 int subChoice;
+            {
+                int subChoice;
 
                 do
                 {
@@ -555,8 +566,8 @@ int main() {
                     cin >> subChoice;
 
                     switch(subChoice)
-                        {
-                         case 1:
+                    {
+                        case 1:
                             addOrderUI(system);
                             break;
 
@@ -567,12 +578,16 @@ int main() {
                         case 3:
                             sortOrdersByTimeUI(system);
                             break;
-                        }
+
+                        case 4:
+                            deleteOrderUI(system);
+                            break;
+                    }
 
                 } while(subChoice != 0);
 
                 break;
-}
+            }
 
             case 3:
                 searchAndAnalysisUI(system);
